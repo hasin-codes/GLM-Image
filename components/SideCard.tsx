@@ -5,7 +5,7 @@ export function SideCard() {
     return (
         <Card shimmer={true} className="col-span-4 row-span-8 group relative">
             <Image
-                src="/images/dark_warrior.png"
+                src="/images/Top.png"
                 alt="Top Generation"
                 fill
                 className="object-cover transition-transform duration-700"
@@ -19,7 +19,7 @@ export function SideCard() {
                 </h2>
                 <div className="flex gap-2">
                     <span className="rounded-full bg-zinc-800/80 px-4 py-1.5 text-xs text-zinc-400 backdrop-blur-md">
-                        @user_id
+                        @hasin-codes
                     </span>
                     <span className="rounded-full bg-zinc-800/80 px-4 py-1.5 text-xs text-zinc-400 backdrop-blur-md">
                         Artist

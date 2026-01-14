@@ -32,6 +32,12 @@ export default function Page() {
         <StatsCard />
         <AlphaCard />
       </div>
+
+      <div className="py-4 text-center">
+        <p className="text-zinc-600 text-sm font-sora">
+          A Hasin Raiyan Creation (<a href="https://hasin.vercel.app" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-400 transition-colors">Hasin raiyan</a>)
+        </p>
+      </div>
     </main>
   );
 }
