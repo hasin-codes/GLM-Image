@@ -66,12 +66,7 @@ export async function GET(request: NextRequest) {
                     style: true,
                     aspectRatio: true,
                     createdAt: true,
-                    // Include minimal user info (no PII)
-                    user: {
-                        select: {
-                            id: true,
-                        },
-                    },
+                    // No user info exposed for privacy
                 },
             }),
             prismadb.generation.count({ where: { isPublic: true } }),

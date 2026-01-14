@@ -207,7 +207,26 @@ export default function CreatePage({ sessionId }: CreatePageProps) {
                     </button>
 
                     <div className="h-full pt-16 lg:pt-0">
-                        <SidebarLeft />
+                        <SidebarLeft
+                            onSelectGeneration={(item) => {
+                                // Load previous generation into the canvas
+                                setGenerationState({
+                                    stage: GenerationStage.COMPLETE,
+                                    result: {
+                                        originalPrompt: item.originalPrompt,
+                                        betterPrompt: item.betterPrompt,
+                                        imageUrl: item.imageUrl,
+                                        ratio: item.aspectRatio,
+                                        timestamp: item.createdAt,
+                                    },
+                                    error: null,
+                                });
+                                // Update URL to reflect selected generation
+                                window.history.replaceState(null, '', `/c/${item.id}`);
+                                setIsHistoryOpen(false);
+                            }}
+                            currentGenerationId={generationState.result?.imageUrl ? sessionId : undefined}
+                        />
                     </div>
                 </div>
 

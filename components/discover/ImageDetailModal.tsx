@@ -1,6 +1,13 @@
-import { DiscoverItem } from "@/app/discover/page";
-// Re-export check
 import { X, Copy, Download, Sparkles } from "lucide-react";
+import Image from "next/image";
+
+interface DiscoverItem {
+    id: string | number;
+    image: string;
+    prompt: string;
+    betterPrompt: string;
+    ratio: string;
+}
 
 interface ImageDetailModalProps {
     item: DiscoverItem;
@@ -8,11 +15,29 @@ interface ImageDetailModalProps {
 }
 
 export function ImageDetailModal({ item, onClose }: ImageDetailModalProps) {
-
     const copyToClipboard = (text: string) => {
         navigator.clipboard.writeText(text);
-        // Ideally show toast here
     };
+
+    const handleDownload = async () => {
+        try {
+            const response = await fetch(item.image);
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `glm-image-${item.id}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch {
+            // Fallback: open in new tab
+            window.open(item.image, '_blank');
+        }
+    };
+
+    const hasRealImage = item.image && !item.image.includes('placeholder');
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
@@ -35,14 +60,25 @@ export function ImageDetailModal({ item, onClose }: ImageDetailModalProps) {
 
                 {/* Left: Image View */}
                 <div className="flex-1 relative bg-zinc-900 flex items-center justify-center p-8 group">
-                    <div className="relative w-full h-full max-h-full aspect-auto rounded-xl overflow-hidden shadow-2xl border border-white/5">
-                        {/* Placeholder Image styling same as card */}
-                        <div className={`w-full h-full bg-gradient-to-br from-blue-900 via-cyan-900 to-black`}>
-                            <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-                        </div>
+                    <div className="relative w-full h-full max-h-full rounded-xl overflow-hidden shadow-2xl border border-white/5">
+                        {hasRealImage ? (
+                            <Image
+                                src={item.image}
+                                alt={item.prompt}
+                                fill
+                                className="object-contain"
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-blue-900 via-cyan-900 to-black">
+                                <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+                            </div>
+                        )}
 
-                        {/* Real Download Button positioned on image */}
-                        <button className="absolute bottom-6 right-6 px-6 py-3 rounded-xl bg-white text-black font-medium hover:bg-zinc-200 transition-colors shadow-lg flex items-center gap-2">
+                        {/* Download Button */}
+                        <button
+                            onClick={handleDownload}
+                            className="absolute bottom-6 right-6 px-6 py-3 rounded-xl bg-white text-black font-medium hover:bg-zinc-200 transition-colors shadow-lg flex items-center gap-2"
+                        >
                             <Download className="h-4 w-4" />
                             Download
                         </button>
@@ -54,8 +90,8 @@ export function ImageDetailModal({ item, onClose }: ImageDetailModalProps) {
 
                     {/* Header */}
                     <div>
-                        <h2 className="text-2xl font-bold font-sora text-white mb-1">Urban Runner</h2>
-                        <span className="text-xs text-zinc-500 uppercase tracking-widest">Variation 0{item.id + 1}</span>
+                        <h2 className="text-2xl font-bold font-sora text-white mb-1">Generation Details</h2>
+                        <span className="text-xs text-zinc-500 uppercase tracking-widest">ID: {String(item.id).slice(0, 8)}</span>
                     </div>
 
                     {/* Original Prompt */}
