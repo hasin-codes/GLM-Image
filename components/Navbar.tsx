@@ -52,9 +52,9 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setCurrentView }) =
                 </div>
             </div>
 
-            {/* Mobile Bottom Navigation - Floating Dock */}
-            <div className="lg:hidden fixed bottom-4 left-4 right-4 z-50">
-                <div className="bg-[#0A0A0A]/95 backdrop-blur-xl border border-zinc-800 rounded-2xl p-2 flex items-center justify-around shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+            {/* Mobile Bottom Navigation - Edge to Edge */}
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50">
+                <div className="bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-zinc-800 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex items-center justify-around shadow-[0_-8px_32px_rgba(0,0,0,0.5)]">
                     <button
                         onClick={() => setCurrentView(View.HOME)}
                         className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-300 ${currentView === View.HOME
