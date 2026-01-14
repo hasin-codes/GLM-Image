@@ -24,7 +24,7 @@ export default function CreatePage({ sessionId }: CreatePageProps) {
     // Generation config
     const [config, setConfig] = useState<GenerationConfig>({
         prompt: "",
-        style: "3D Render",
+        style: "",
         model: "GLM-Image",
         ratio: "16:9 Cinema",
         detail: 75,

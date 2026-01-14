@@ -122,10 +122,10 @@ export function ControlPanel({ config, setConfig, onGenerate, isGenerating }: Co
                     <SignedIn>
                         <button
                             onClick={onGenerate}
-                            disabled={isGenerating || !config.prompt.trim()}
+                            disabled={isGenerating || !config.prompt.trim() || !config.style}
                             className={`w-full h-11 lg:h-12 rounded-xl font-medium text-sm lg:text-base flex items-center justify-center gap-2 transition-all ${isGenerating
                                 ? 'bg-blue-600/50 text-blue-200 cursor-not-allowed'
-                                : !config.prompt.trim()
+                                : !config.prompt.trim() || !config.style
                                     ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
                                     : 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white shadow-lg shadow-blue-500/25'
                                 }`}
@@ -134,8 +134,8 @@ export function ControlPanel({ config, setConfig, onGenerate, isGenerating }: Co
                                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                             ) : (
                                 <>
-                                    <span>Generate</span>
-                                    <Sparkles className="h-4 w-4 fill-current opacity-70" />
+                                    <span>{!config.prompt.trim() ? "Enter Prompt" : !config.style ? "Select Style" : "Generate"}</span>
+                                    {config.prompt.trim() && config.style && <Sparkles className="h-4 w-4 fill-current opacity-70" />}
                                 </>
                             )}
                         </button>

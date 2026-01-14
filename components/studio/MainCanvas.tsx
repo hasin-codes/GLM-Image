@@ -17,6 +17,7 @@ const DEFAULT_GENERATION_STATE: GenerationState = {
 
 export function MainCanvas({ config, generationState = DEFAULT_GENERATION_STATE, onRetry }: MainCanvasProps) {
     const [copied, setCopied] = useState(false);
+    const [showImageModal, setShowImageModal] = useState(false);
 
     const copyToClipboard = (text: string) => {
         navigator.clipboard.writeText(text);
@@ -41,6 +42,8 @@ export function MainCanvas({ config, generationState = DEFAULT_GENERATION_STATE,
                         result={safeState.result!}
                         onCopy={copyToClipboard}
                         copied={copied}
+                        showImageModal={showImageModal}
+                        setShowImageModal={setShowImageModal}
                     />
                 );
             default:
@@ -54,8 +57,15 @@ export function MainCanvas({ config, generationState = DEFAULT_GENERATION_STATE,
             <div className="absolute top-2 left-2 right-2 lg:top-6 lg:left-6 lg:right-6 z-20 flex justify-between items-center pointer-events-none">
                 <div className="flex gap-1 lg:gap-2 pointer-events-auto">
                     <StatusPill icon={Box} label={config.model} active />
-                    <StatusPill icon={Wand2} label={config.style} />
-                    <StatusPill icon={Maximize2} label={config.ratio} />
+
+
+                    {/* Size/Expand Pill - Clickable when complete */}
+                    <div
+                        onClick={() => safeState.stage === GenerationStage.COMPLETE && setShowImageModal(true)}
+                        className={`transition-opacity ${safeState.stage === GenerationStage.COMPLETE ? 'cursor-pointer hover:opacity-80 active:scale-95 transition-transform' : ''}`}
+                    >
+                        <StatusPill icon={Maximize2} label={config.ratio} active={safeState.stage === GenerationStage.COMPLETE} />
+                    </div>
                 </div>
                 <button className="hidden lg:flex h-10 w-10 rounded-full bg-zinc-900/80 border border-zinc-800 items-center justify-center text-zinc-400 hover:text-white pointer-events-auto backdrop-blur-md">
                     <MoreHorizontal className="h-5 w-5" />
@@ -95,33 +105,33 @@ function IdleState() {
 // Stage 1: Optimizing with BetterGLM
 function OptimizingState() {
     return (
-        <div className="relative flex flex-col items-center justify-center w-[400px] h-[480px] rounded-[2rem] border border-blue-500/30 bg-blue-950/10 overflow-hidden">
+        <div className="relative flex flex-col items-center justify-center w-[95%] max-w-[260px] lg:max-w-[400px] h-auto min-h-[200px] lg:h-[480px] lg:aspect-auto rounded-[2rem] border border-blue-500/30 bg-blue-950/10 overflow-hidden p-4 lg:p-0">
             {/* Animated glow effect */}
             <div className="absolute inset-0 bg-gradient-to-t from-blue-500/10 via-transparent to-transparent animate-pulse" />
 
             {/* Orbiting particles */}
             <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-32 h-32 rounded-full border border-blue-500/20 animate-spin-slow" style={{ animationDuration: '8s' }} />
-                <div className="absolute w-40 h-40 rounded-full border border-blue-500/10 animate-spin-slow" style={{ animationDuration: '12s', animationDirection: 'reverse' }} />
+                <div className="w-16 h-16 lg:w-32 lg:h-32 rounded-full border border-blue-500/20 animate-spin-slow" style={{ animationDuration: '8s' }} />
+                <div className="absolute w-24 h-24 lg:w-40 lg:h-40 rounded-full border border-blue-500/10 animate-spin-slow" style={{ animationDuration: '12s', animationDirection: 'reverse' }} />
             </div>
 
             <div className="relative z-10 flex flex-col items-center">
-                <div className="h-20 w-20 mb-6 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center shadow-[0_0_40px_rgba(59,130,246,0.3)]">
-                    <Sparkles className="h-8 w-8 text-blue-400 animate-pulse" />
+                <div className="h-10 w-10 lg:h-20 lg:w-20 mb-3 lg:mb-6 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center shadow-[0_0_40px_rgba(59,130,246,0.3)]">
+                    <Sparkles className="h-4 w-4 lg:h-8 lg:w-8 text-blue-400 animate-pulse" />
                 </div>
-                <h3 className="text-xl font-sora font-medium text-white mb-2">BetterGLM Processing</h3>
-                <p className="text-sm text-blue-300/70 text-center max-w-[250px] mb-6">
-                    Optimizing your prompt for maximum quality...
+                <h3 className="text-base lg:text-xl font-sora font-medium text-white mb-1 lg:mb-2">BetterGLM</h3>
+                <p className="text-[10px] lg:text-sm text-blue-300/70 text-center max-w-[200px] mb-3 lg:mb-6 leading-relaxed">
+                    Optimizing prompt...
                 </p>
 
                 {/* Progress indicator */}
                 <div className="flex items-center gap-2">
                     <div className="flex gap-1">
-                        <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                        <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '300ms' }} />
                     </div>
-                    <span className="text-xs text-zinc-500 uppercase tracking-widest">Stage 1 of 2</span>
+                    <span className="text-[10px] lg:text-xs text-zinc-500 uppercase tracking-widest">Stage 1 of 2</span>
                 </div>
             </div>
         </div>
@@ -131,32 +141,32 @@ function OptimizingState() {
 // Stage 2: Generating image
 function GeneratingState() {
     return (
-        <div className="relative flex flex-col items-center justify-center w-[400px] h-[480px] rounded-[2rem] border border-cyan-500/30 bg-cyan-950/10 overflow-hidden">
+        <div className="relative flex flex-col items-center justify-center w-[95%] max-w-[260px] lg:max-w-[400px] h-auto min-h-[200px] lg:h-[480px] lg:aspect-auto rounded-[2rem] border border-cyan-500/30 bg-cyan-950/10 overflow-hidden p-4 lg:p-0">
             {/* Animated gradient sweep */}
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent animate-shimmer-slow" />
             </div>
 
             {/* Image placeholder with shimmer */}
-            <div className="relative w-[280px] h-[280px] rounded-2xl bg-zinc-900/50 border border-cyan-500/20 overflow-hidden mb-6">
+            <div className="relative w-[130px] h-[130px] lg:w-[280px] lg:h-[280px] rounded-2xl bg-zinc-900/50 border border-cyan-500/20 overflow-hidden mb-3 lg:mb-6">
                 <div className="absolute inset-0 bg-gradient-to-r from-zinc-800/50 via-zinc-700/50 to-zinc-800/50 animate-shimmer" />
                 {/* Grid pattern inside */}
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:1rem_1rem]" />
             </div>
 
-            <h3 className="text-xl font-sora font-medium text-white mb-2">Rendering Image</h3>
-            <p className="text-sm text-cyan-300/70 text-center max-w-[250px] mb-6">
-                GLM-Image is creating your artwork...
+            <h3 className="text-base lg:text-xl font-sora font-medium text-white mb-1 lg:mb-2">Rendering Image</h3>
+            <p className="text-[10px] lg:text-sm text-cyan-300/70 text-center max-w-[200px] mb-3 lg:mb-6 leading-relaxed">
+                Creating artwork...
             </p>
 
             {/* Progress indicator */}
             <div className="flex items-center gap-2">
                 <div className="flex gap-1">
-                    <div className="w-2 h-2 rounded-full bg-cyan-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <div className="w-2 h-2 rounded-full bg-cyan-500 animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <div className="w-2 h-2 rounded-full bg-cyan-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full bg-cyan-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full bg-cyan-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full bg-cyan-500 animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
-                <span className="text-xs text-zinc-500 uppercase tracking-widest">Stage 2 of 2</span>
+                <span className="text-[10px] lg:text-xs text-zinc-500 uppercase tracking-widest">Stage 2 of 2</span>
             </div>
         </div>
     );
@@ -165,7 +175,7 @@ function GeneratingState() {
 // Error State
 function ErrorState({ error, onRetry }: { error: string | null; onRetry?: () => void }) {
     return (
-        <div className="relative flex flex-col items-center justify-center w-[400px] h-[480px] rounded-[2rem] border border-red-500/30 bg-red-950/10">
+        <div className="relative flex flex-col items-center justify-center w-[90%] max-w-[400px] h-auto min-h-[400px] lg:h-[480px] aspect-square lg:aspect-auto rounded-[2rem] border border-red-500/30 bg-red-950/10 p-6 lg:p-0">
             <div className="h-16 w-16 mb-6 rounded-full bg-red-500/20 border border-red-500/30 flex items-center justify-center">
                 <AlertCircle className="h-8 w-8 text-red-400" />
             </div>
@@ -186,94 +196,191 @@ function ErrorState({ error, onRetry }: { error: string | null; onRetry?: () => 
     );
 }
 
-// Complete State - Show generated image
+// CompleteState - Show generated image
 function CompleteState({
     result,
     onCopy,
-    copied
+    copied,
+    showImageModal,
+    setShowImageModal
 }: {
     result: { imageUrl: string; originalPrompt: string; betterPrompt: string };
     onCopy: (text: string) => void;
     copied: boolean;
+    showImageModal: boolean;
+    setShowImageModal: (show: boolean) => void;
 }) {
     const [imageError, setImageError] = useState(false);
+    const [activePrompt, setActivePrompt] = useState<'original' | 'better' | null>(null);
 
     return (
-        <div className="relative w-full h-full flex flex-col lg:flex-row gap-8 p-8">
-            {/* Generated Image */}
-            <div className="flex-1 relative rounded-3xl overflow-hidden border border-zinc-800 bg-zinc-900/50 shadow-2xl group flex items-center justify-center p-4">
-                {imageError ? (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-zinc-500 gap-4">
-                        <AlertCircle className="h-12 w-12" />
-                        <p className="text-sm text-center px-4">Image could not be loaded.<br />The link may have expired.</p>
-                    </div>
-                ) : (
-                    <img
-                        src={result.imageUrl}
-                        alt="Generated"
-                        className="w-full h-full object-contain"
-                        onError={() => setImageError(true)}
-                    />
-                )}
-
-                {/* Overlay actions */}
-                <div className="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <a
-                        href={result.imageUrl}
-                        download
-                        target="_blank"
-                        className="px-4 py-2 rounded-lg bg-white text-black text-sm font-medium hover:bg-zinc-200 transition-colors flex items-center gap-2"
+        <>
+            {/* Main Container - Absolute fill to prevent pushing */}
+            <div className="absolute inset-0 flex flex-row gap-3 lg:gap-6 p-2 lg:p-6 overflow-hidden">
+                {/* Left Side: Image Container */}
+                <div
+                    className="flex-1 relative rounded-2xl lg:rounded-3xl overflow-hidden border border-zinc-800 bg-zinc-900/50 shadow-2xl group min-w-0 bg-[url('/grid.svg')] flex items-center justify-center p-4 lg:p-6"
+                >
+                    {/* Expand Icon - Top Right of Container */}
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setShowImageModal(true);
+                        }}
+                        className="absolute top-3 right-3 lg:top-4 lg:right-4 z-30 p-2 rounded-xl bg-black/20 hover:bg-black/40 border border-white/10 hover:border-white/20 text-white/70 hover:text-white transition-all backdrop-blur-md"
                     >
-                        <Download className="h-4 w-4" />
-                        Download
-                    </a>
-                </div>
-            </div>
+                        <Maximize2 className="h-4 w-4 lg:h-5 lg:w-5" />
+                    </button>
 
-            {/* Prompts Panel */}
-            <div className="w-full lg:w-[320px] flex flex-col gap-4 overflow-y-auto custom-scrollbar">
-                {/* Original Prompt */}
-                <div className="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800">
-                    <div className="flex justify-between items-center mb-2">
-                        <span className="text-xs text-zinc-500 uppercase tracking-wider">Original Prompt</span>
-                        <button
-                            onClick={() => onCopy(result.originalPrompt)}
-                            className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-500 hover:text-white transition-colors"
-                        >
-                            <Copy className="h-3.5 w-3.5" />
-                        </button>
-                    </div>
-                    <p className="text-sm text-zinc-300 leading-relaxed line-clamp-4">
-                        {result.originalPrompt}
-                    </p>
+                    {imageError ? (
+                        <div className="w-full h-full flex flex-col items-center justify-center text-zinc-500 gap-2">
+                            <AlertCircle className="h-6 w-6 lg:h-10 lg:w-10" />
+                            <p className="text-[10px] lg:text-sm text-center px-4">Image Error</p>
+                        </div>
+                    ) : (
+                        <img
+                            src={result.imageUrl}
+                            alt="Generated"
+                            className="w-full h-full object-contain cursor-pointer"
+                            onClick={() => setShowImageModal(true)}
+                            onError={() => setImageError(true)}
+                        />
+                    )}
                 </div>
 
-                {/* BetterGLM Prompt */}
-                <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/20">
-                    <div className="flex justify-between items-center mb-2">
-                        <span className="flex items-center gap-1.5 text-xs text-blue-400 uppercase tracking-wider">
-                            <Sparkles className="h-3 w-3" />
-                            BetterGLM Prompt
+                {/* Right Side: Prompts Buttons - Fixed Width */}
+                <div className="w-[80px] lg:w-[120px] flex flex-col gap-3 lg:gap-4 shrink-0 h-full justify-center">
+                    {/* Original Prompt Button */}
+                    <button
+                        onClick={() => setActivePrompt('original')}
+                        className="w-full aspect-square flex flex-col items-center justify-center gap-1 lg:gap-2 p-1 lg:p-2 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:bg-zinc-800 hover:border-zinc-600 transition-all group/btn text-center"
+                    >
+                        <span className="text-[10px] lg:text-xs text-zinc-500 group-hover/btn:text-zinc-300 font-medium leading-tight">
+                            Original<br />Prompt
                         </span>
-                        <button
-                            onClick={() => onCopy(result.betterPrompt)}
-                            className="p-1.5 rounded-lg hover:bg-blue-500/10 text-blue-400 hover:text-blue-300 transition-colors"
-                        >
-                            <Copy className="h-3.5 w-3.5" />
-                        </button>
-                    </div>
-                    <p className="text-sm text-zinc-300 leading-relaxed max-h-[200px] overflow-y-auto custom-scrollbar">
-                        {result.betterPrompt}
-                    </p>
-                </div>
+                    </button>
 
-                {copied && (
-                    <div className="text-center text-xs text-green-400 animate-pulse">
-                        Copied to clipboard!
-                    </div>
-                )}
+                    {/* BetterGLM Prompt Button */}
+                    <button
+                        onClick={() => setActivePrompt('better')}
+                        className="w-full aspect-square flex flex-col items-center justify-center gap-1 lg:gap-2 p-1 lg:p-2 rounded-xl bg-blue-500/5 border border-blue-500/20 hover:bg-blue-500/10 hover:border-blue-500/40 transition-all group/btn text-center"
+                    >
+                        <span className="text-[10px] lg:text-xs text-blue-400/80 group-hover/btn:text-blue-300 font-medium leading-tight">
+                            Better<br />GLM
+                        </span>
+                    </button>
+                </div>
             </div>
-        </div>
+
+            {/* Image Modal - Fixed Fullscreen Overlay */}
+            {showImageModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 lg:p-8">
+                    <div
+                        className="absolute inset-0 bg-black/95 backdrop-blur-md"
+                        onClick={() => setShowImageModal(false)}
+                    />
+                    <div className="relative w-full max-w-7xl h-[85vh] flex flex-col items-center justify-center pointer-events-none gap-4">
+                        <div className="relative w-full flex-1 rounded-2xl overflow-hidden shadow-2xl pointer-events-auto flex items-center justify-center bg-zinc-900 bg-[url('/grid.svg')]">
+                            <img
+                                src={result.imageUrl}
+                                alt="Full view"
+                                className="max-w-full max-h-full object-contain"
+                            />
+                        </div>
+
+                        <div className="flex gap-3 px-6 py-3 rounded-full bg-zinc-900/90 backdrop-blur-md border border-zinc-800 pointer-events-auto shadow-xl">
+                            <a
+                                href={result.imageUrl}
+                                download
+                                target="_blank"
+                                className="flex items-center gap-2 text-sm font-medium text-white hover:text-blue-400 transition-colors"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <Download className="h-4 w-4" />
+                                Download
+                            </a>
+                            <div className="w-px h-4 bg-zinc-700 my-auto" />
+                            <button
+                                onClick={() => setShowImageModal(false)}
+                                className="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Prompt Modal - Fixed Fullscreen Overlay */}
+            {activePrompt && (
+                <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4">
+                    <div
+                        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                        onClick={() => setActivePrompt(null)}
+                    />
+                    <div className="relative w-full max-w-lg bg-zinc-900 sm:rounded-2xl rounded-t-2xl border border-zinc-800 shadow-2xl flex flex-col max-h-[85vh] sm:max-h-[80vh] animate-in slide-in-from-bottom-4 fade-in duration-200">
+                        {/* Header */}
+                        <div className="px-6 py-4 border-b border-zinc-800 flex justify-between items-center bg-zinc-950/50 shrink-0 rounded-t-2xl">
+                            <h3 className="font-sora font-medium text-white flex items-center gap-2">
+                                {activePrompt === 'better' ? (
+                                    <>
+                                        <Sparkles className="h-4 w-4 text-blue-400" />
+                                        <span className="text-blue-100">BetterGLM Prompt</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <MoreHorizontal className="h-4 w-4 text-zinc-400" />
+                                        <span className="text-zinc-100">Original Prompt</span>
+                                    </>
+                                )}
+                            </h3>
+                            <button
+                                onClick={() => setActivePrompt(null)}
+                                className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-500 hover:text-white transition-colors"
+                            >
+                                <span className="sr-only">Close</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                            </button>
+                        </div>
+
+                        {/* Scrollable Content */}
+                        <div className="p-6 overflow-y-auto custom-scrollbar flex-1 min-h-[150px]">
+                            <p className="text-base text-zinc-300 leading-relaxed whitespace-pre-wrap font-light select-text">
+                                {activePrompt === 'better' ? result.betterPrompt : result.originalPrompt}
+                            </p>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="px-6 py-4 border-t border-zinc-800 bg-zinc-950/30 flex justify-between items-center shrink-0 mb-safe">
+                            <div className="flex flex-col">
+                                {copied ? (
+                                    <span className="text-sm text-green-400 flex items-center gap-2 font-medium">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
+                                        Copied to clipboard
+                                    </span>
+                                ) : (
+                                    <span className="text-xs text-zinc-500">
+                                        {activePrompt === 'better' ? 'Optimized for best results' : 'Your original input'}
+                                    </span>
+                                )}
+                            </div>
+                            <button
+                                onClick={() => onCopy(activePrompt === 'better' ? result.betterPrompt : result.originalPrompt)}
+                                className={`
+                                    px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all
+                                    ${activePrompt === 'better'
+                                        ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+                                        : 'bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700'}
+                                `}
+                            >
+                                <Copy className="h-4 w-4" />
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
     );
 }
 
