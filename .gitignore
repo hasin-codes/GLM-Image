@@ -42,3 +42,5 @@ next-env.d.ts
 
 # documentation
 data.md
+
+/lib/generated/prisma

@@ -4,64 +4,172 @@
 
 # GLM-Image
 
-GLM-Image is a dedicated web interface for the latest image generation model by Z.ai.
+AI-powered image generation platform using GLM-4.7 prompt optimization and GLM-Image rendering.
 
-While the GLM-Image model is accessible via Hugging Face, this project provides a robust, production-grade environment for users to interact with the model. It extends the core generation capabilities with multi-layer rendering support, a refined user interface, and advanced layout controls that are not available in standard demo environments.
+**Live**: [image-glm.vercel.app](https://image-glm.vercel.app)
 
-## Overview
+---
 
-This application bridges the gap between raw model inference and a usable creative workflow. It is built to handle complex generation tasks including layer separation and high-fidelity inspections.
+## Architecture
 
-**Current Status**: Frontend implementation is complete. Backend integration with the GLM-4 model API is currently in development.
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         FRONTEND                                │
+│  Next.js 16 App Router • React 19 • Tailwind CSS 4 • Clerk     │
+├─────────────────────────────────────────────────────────────────┤
+│  /              Landing page with feature cards                 │
+│  /create        AI generation studio (MainCanvas + ControlPanel)│
+│  /discover      Public gallery (masonry layout)                 │
+│  /g/[id]        Single generation view                          │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      MIDDLEWARE                                 │
+│  Clerk Auth • Upstash Rate Limiting (10/min mutations)         │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      API ROUTES                                 │
+│  POST /api/optimize     → GLM-4.7 (prompt enhancement)          │
+│  POST /api/generate     → GLM-Image + Supabase upload + DB      │
+│  GET  /api/history      → Paginated user generations            │
+│  GET  /api/discovery    → Public feed (no auth)                 │
+│  *    /api/generation/[id] → CRUD with ownership check          │
+│  POST /api/webhooks/clerk  → User sync from Clerk               │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    EXTERNAL SERVICES                            │
+│  Zhipu AI (GLM-4.7 + GLM-Image) • Supabase (DB + Storage)       │
+│  Clerk (Auth) • Upstash (Redis rate limiting)                   │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-## Features
+---
 
-- **Multi-Layer Generation**: Support for generating and compositing multiple image layers.
-- **Studio Environment**: A focused workspace (`/create`) with granular control over generation parameters.
-- **Advanced Inspection**: Custom magnifying glass tool for inspecting generated details at 1.25x magnification without loss of clarity.
-- **Responsive Layout**: Adaptive control panel and gallery layouts for mobile and desktop workstations.
-- **Authentication**: Integrated Clerk authentication for user session management.
+## Generation Pipeline
+
+```
+User Input → /api/optimize → GLM-4.7 → betterPrompt
+                                           │
+                                           ▼
+                               /api/generate → GLM-Image → imageUrl
+                                                              │
+                                                              ▼
+                                               Supabase Storage (persist)
+                                                              │
+                                                              ▼
+                                               PostgreSQL (Generation record)
+```
+
+---
 
 ## Tech Stack
 
-- **Framework**: Next.js 16 (App Router)
-- **Library**: React 19 rc
-- **Styling**: Tailwind CSS 4
-- **State**: Zustand
-- **Graphics**: Three.js / OGL
-- **Auth**: Clerk
+| Layer | Technology |
+|-------|------------|
+| Framework | Next.js 16 (App Router) |
+| UI | React 19, Tailwind CSS 4 |
+| Auth | Clerk |
+| Database | PostgreSQL (Supabase) via Prisma 7 |
+| Storage | Supabase Storage |
+| Rate Limit | Upstash Redis |
+| AI Models | GLM-4.7 (text), GLM-Image (generation) |
+| Logging | Pino (structured, redacted) |
+
+---
+
+## Database Schema
+
+```
+User ──┬── Generation (1:N)
+       └── ModerationLog (1:N)
+
+Generation: id, userId, imageUrl, originalPrompt, betterPrompt,
+            model, style, aspectRatio, detailLevel, isPublic,
+            optimizationDelta, generationDuration, retryCount
+
+ModerationLog: id, userId, prompt, reason, stage
+ErrorLog: id, userId, endpoint, message, stack
+```
+
+---
+
+## Security
+
+- **Auth**: Clerk middleware on all routes (except webhooks)
+- **Validation**: Zod schemas on all API inputs
+- **Rate Limit**: 10 req/min mutations, 60 req/min reads
+- **Logging**: Pino with auto-redaction of secrets/prompts
+- **Ownership**: Users can only modify their own generations
+- **Webhook**: Svix signature verification
+
+---
+
+## Environment Variables
+
+```env
+# Database (Supabase PostgreSQL)
+DATABASE_URL=postgresql://...
+DIRECT_URL=postgresql://...
+
+# AI API
+ZAI_API_KEY=sk-...
+
+# Rate Limiting (Upstash)
+UPSTASH_REDIS_REST_URL=https://...
+UPSTASH_REDIS_REST_TOKEN=...
+
+# Storage (Supabase)
+SUPABASE_URL=https://...
+SUPABASE_SERVICE_ROLE_KEY=...
+
+# Auth (Clerk)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
+CLERK_SECRET_KEY=sk_...
+CLERK_WEBHOOK_SECRET=whsec_...
+```
+
+---
 
 ## Local Development
 
-### Prerequisites
+```bash
+# Install
+npm install
 
-- Node.js 20+
-- npm 10+
+# Generate Prisma client
+npx prisma generate
 
-### Installation
+# Run dev server
+npm run dev
 
-1. Clone the repository
-   ```bash
-   git clone https://github.com/your-org/glmimage.git
-   ```
+# Open Prisma Studio
+npx prisma studio
+```
 
-2. Install dependencies
-   ```bash
-   npm install
-   ```
+---
 
-3. Configure environment
-   Create a `.env.local` file with required credentials:
-   ```env
-   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-   CLERK_SECRET_KEY=sk_test_...
-   ```
+## Deployment
 
-4. Start development server
-   ```bash
-   npm run dev
-   ```
+Vercel auto-deploys on push. Ensure all env vars are set in Vercel dashboard.
+
+```bash
+# Manual deploy
+vercel --prod
+```
+
+---
 
 ## License
 
 Proprietary Software. All rights reserved.
+
+---
+
+<div align="center">
+  <sub>A <a href="https://hasin.vercel.app">Hasin Raiyan</a> Creation</sub>
+</div>

@@ -35,7 +35,7 @@ export default function Page() {
 
       <div className="py-4 text-center">
         <p className="text-zinc-600 text-sm font-sora">
-          A <a href="https://hasin.vercel.app" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-400 transition-colors">Hasin raiyan</a> Creation
+          <a href="https://hasin.vercel.app" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-400 transition-colors">A Hasin Raiyan Creation</a>
         </p>
       </div>
     </main>

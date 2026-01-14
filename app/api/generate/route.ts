@@ -1,19 +1,26 @@
 import { auth } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+import { generateImage, downloadImageAsBuffer, RATIO_MAP } from '@/lib/generator';
+import { uploadImage } from '@/lib/supabase';
+import logger, { logApiError, logApiRequest } from '@/lib/logger';
+import { mutationRateLimiter, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit';
+import prismadb from '@/lib/prismadb';
 
-// Map user-friendly ratio names to GLM-Image pixel dimensions
-// Per docs: width and height must be 512-2048px, multiples of 32
-const RATIO_MAP: Record<string, { width: number; height: number }> = {
-    '1:1 Square': { width: 1280, height: 1280 },
-    '16:9 Cinema': { width: 1728, height: 960 },
-    '9:16 Portrait': { width: 960, height: 1728 },
-    '4:3 Standard': { width: 1472, height: 1088 },
-    '3:4 Tall': { width: 1088, height: 1472 },
-    '3:2': { width: 1568, height: 1056 },
-    '2:3': { width: 1056, height: 1568 },
-};
+/**
+ * Request body schema with Zod validation
+ */
+const bodySchema = z.object({
+    prompt: z.string().min(1, 'Prompt is required'),
+    originalPrompt: z.string().optional(),
+    ratio: z.string().optional().default('1:1 Square'),
+    style: z.string().optional(),
+    detailLevel: z.number().min(1).max(10).optional().default(5),
+});
 
 export async function POST(request: NextRequest) {
+    const startTime = Date.now();
+
     try {
         // Auth check
         const { userId } = await auth();
@@ -24,68 +31,113 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const body = await request.json();
-        const { prompt, ratio } = body;
+        logApiRequest('/api/generate', 'POST', userId);
 
-        if (!prompt || typeof prompt !== 'string') {
+        // Rate limiting
+        const rateLimit = await checkRateLimit(mutationRateLimiter, userId);
+        if (!rateLimit.success) {
+            logger.warn({ userId, endpoint: '/api/generate' }, 'Rate limit exceeded');
+            return rateLimitResponse(rateLimit.reset);
+        }
+
+        // Parse and validate request body
+        const body = await request.json();
+        const validation = bodySchema.safeParse(body);
+
+        if (!validation.success) {
             return NextResponse.json(
-                { error: 'Prompt is required' },
+                { error: validation.error.issues[0]?.message || 'Invalid request body' },
                 { status: 400 }
             );
         }
 
-        // Get dimensions from ratio, default to 1:1 if not found
-        const dimensions = RATIO_MAP[ratio] || RATIO_MAP['1:1 Square'];
-        const size = `${dimensions.width}x${dimensions.height}`;
+        const { prompt, originalPrompt, ratio, style, detailLevel } = validation.data;
 
-        // Call GLM-Image API
-        const apiKey = process.env.ZAI_API_KEY;
-        if (!apiKey) {
+        // Generate image with retry logic
+        const result = await generateImage(prompt, ratio);
+
+        if (!result.success) {
+            // Log moderation violations
+            if (result.error?.toLowerCase().includes('policy')) {
+                try {
+                    await prismadb.moderationLog.create({
+                        data: {
+                            userId,
+                            prompt: prompt.substring(0, 500),
+                            reason: result.error,
+                            stage: 'Generation',
+                        },
+                    });
+                } catch (dbError) {
+                    logger.error({ endpoint: '/api/generate' }, 'Failed to log moderation event');
+                }
+            }
+
+            logApiError('/api/generate', result.error, userId);
             return NextResponse.json(
-                { error: 'API key not configured' },
+                { error: result.error || 'Failed to generate image' },
                 { status: 500 }
             );
         }
 
-        const response = await fetch('https://api.z.ai/api/paas/v4/images/generations', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`,
-            },
-            body: JSON.stringify({
-                model: 'glm-image',
-                prompt: prompt,
-                size: size,
-            }),
-        });
+        // Download image and upload to Supabase Storage
+        const generationId = crypto.randomUUID();
+        let finalImageUrl = result.imageUrl!;
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('GLM-Image API Error:', errorText);
-            return NextResponse.json(
-                { error: 'Failed to generate image' },
-                { status: 500 }
-            );
+        try {
+            const imageBuffer = await downloadImageAsBuffer(result.imageUrl!);
+            if (imageBuffer) {
+                const uploadResult = await uploadImage(userId, generationId, imageBuffer);
+                if (uploadResult.url) {
+                    finalImageUrl = uploadResult.url;
+                } else {
+                    logger.warn({ error: uploadResult.error }, 'Failed to upload to Supabase, using original URL');
+                }
+            }
+        } catch (uploadError) {
+            logger.warn({ error: uploadError }, 'Storage upload failed, using original URL');
         }
 
-        const data = await response.json();
-        const imageUrl = data.data?.[0]?.url;
+        // Calculate analytics
+        const duration = Math.round((Date.now() - startTime) / 1000);
+        const optimizationDelta = originalPrompt
+            ? prompt.length - originalPrompt.length
+            : null;
 
-        if (!imageUrl) {
-            return NextResponse.json(
-                { error: 'No image URL in response' },
-                { status: 500 }
-            );
+        // Insert Generation record
+        try {
+            await prismadb.generation.create({
+                data: {
+                    id: generationId,
+                    userId,
+                    imageUrl: finalImageUrl,
+                    originalPrompt: originalPrompt || prompt,
+                    betterPrompt: prompt,
+                    model: 'glm-image',
+                    style: style || null,
+                    aspectRatio: ratio,
+                    detailLevel: detailLevel,
+                    isPublic: false,
+                    optimizationDelta,
+                    generationDuration: duration,
+                    retryCount: 0,
+                },
+            });
+        } catch (dbError) {
+            logger.error({ generationId }, 'Failed to save generation to database');
+            // Continue - image was still generated successfully
         }
+
+        logger.info({ userId, generationId, durationSec: duration }, 'Generation completed');
 
         return NextResponse.json({
-            imageUrl,
-            size,
+            imageUrl: finalImageUrl,
+            generationId,
+            size: result.size,
         });
 
     } catch (error) {
-        console.error('Generate API Error:', error);
+        logApiError('/api/generate', error);
         return NextResponse.json(
             { error: 'Internal server error' },
             { status: 500 }

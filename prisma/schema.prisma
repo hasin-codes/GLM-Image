@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+
+model User {
+  id        String   @id @default(uuid()) // Clerk ID
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  generations Generation[]
+  moderationLogs ModerationLog[]
+}
+
+model Generation {
+  id             String   @id @default(uuid())
+  userId         String
+  imageUrl       String
+  originalPrompt String   @db.Text
+  betterPrompt   String   @db.Text
+  model          String
+  style          String?
+  aspectRatio    String
+  detailLevel    Int
+  isPublic       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  // Analytics fields
+  optimizationDelta Int?     // Length diff (better - original)
+  generationDuration Int?    // Seconds for full process
+  retryCount        Int      @default(0)
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ModerationLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  prompt    String   @db.Text
+  reason    String   // e.g., "Policy Violation"
+  stage     String   // "Optimization" or "Generation"
+  createdAt DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model ErrorLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  endpoint  String
+  message   String   @db.Text
+  stack     String?  @db.Text
+  createdAt DateTime @default(now())
+}
