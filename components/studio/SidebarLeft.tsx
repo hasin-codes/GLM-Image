@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { History, Loader2 } from "lucide-react";
-import Image from "next/image";
 
 interface HistoryItem {
     id: string;
@@ -82,13 +81,18 @@ export function SidebarLeft({ onSelectGeneration, currentGenerationId }: Sidebar
                                     }
                                 `}
                             >
-                                <Image
+                                {/* Use regular img for external URLs */}
+                                <img
                                     src={item.imageUrl}
-                                    alt={item.originalPrompt.slice(0, 50)}
-                                    fill
-                                    className="object-cover transition-transform group-hover:scale-105"
-                                    sizes="60px"
+                                    alt=""
+                                    className="absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105"
+                                    onError={(e) => {
+                                        // Hide broken images
+                                        (e.target as HTMLImageElement).style.display = 'none';
+                                    }}
                                 />
+                                {/* Fallback gradient */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-900 to-zinc-900 -z-10" />
                                 {/* Hover overlay with prompt preview */}
                                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-1">
                                     <p className="text-[8px] text-white line-clamp-2 leading-tight">

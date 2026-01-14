@@ -50,14 +50,14 @@ export function ControlPanel({ config, setConfig, onGenerate, isGenerating }: Co
                         <Sparkles className="h-3 w-3 lg:h-4 lg:w-4 text-blue-500" />
                         Prompt
                     </label>
-                    <span className="text-[10px] lg:text-xs text-zinc-600">{config.prompt.length}/500</span>
+                    <span className="text-[10px] lg:text-xs text-zinc-600">{config.prompt.length}/3000</span>
                 </div>
                 <textarea
                     className="w-full h-20 lg:h-32 bg-zinc-900/50 border border-zinc-800 rounded-xl p-3 text-xs lg:text-sm text-zinc-200 placeholder-zinc-600 resize-none focus:outline-none focus:border-blue-500/50 transition-all font-outfit disabled:opacity-50"
                     placeholder="Describe your imagination..."
                     value={config.prompt}
                     onChange={(e) => handleChange("prompt", e.target.value)}
-                    maxLength={500}
+                    maxLength={3000}
                     disabled={isGenerating}
                 />
             </div>

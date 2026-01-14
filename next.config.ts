@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'mfile.z.ai',
+      },
+      {
+        protocol: 'https',
         hostname: '*.bigmodel.cn',
       },
       {
