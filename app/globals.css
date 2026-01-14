@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050505;
+  --foreground: #ffffff;
+  --card-bg: #0a0a0a;
+  --card-border: #1f1f1f;
+  --primary: #ffffff;
+  --secondary: #a1a1aa;
+  --accent: #3b82f6;
+  /* Pink dot color */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card-bg);
+  --color-border: var(--card-border);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --font-sora: var(--font-sora);
+  --font-outfit: var(--font-outfit);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-outfit), sans-serif;
+  overflow-x: hidden;
+  /* Only hide X to allow Y scrolling if content is long, though app is designed for 100vh */
+  /* Ensure non-scrollable as requested */
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Custom Utilities for Glassmorphism and Gradients if needed later */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}
+
+/* Generation stage animations */
+@keyframes spin-slow {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+@keyframes shimmer-slow {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer-slow {
+  animation: shimmer-slow 3s infinite;
+}
+
+/* Custom Scrollbar for Control Panel */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+/* Firefox Scrollbar Support */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #27272a transparent;
+}
