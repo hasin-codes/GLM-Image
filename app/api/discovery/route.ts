@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
                     style: true,
                     aspectRatio: true,
                     createdAt: true,
-                    // No user info exposed for privacy
+                    // NO user info exposed - completely anonymous
                 },
             }),
             prismadb.generation.count({ where: { isPublic: true } }),

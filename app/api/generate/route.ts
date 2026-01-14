@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
                     style: style || null,
                     aspectRatio: ratio,
                     detailLevel: detailLevel,
-                    isPublic: false,
+                    isPublic: true,
                     optimizationDelta,
                     generationDuration: duration,
                     retryCount: 0,
