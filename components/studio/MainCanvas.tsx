@@ -51,13 +51,13 @@ export function MainCanvas({ config, generationState = DEFAULT_GENERATION_STATE,
     return (
         <div className="relative h-full w-full flex flex-col">
             {/* Top Status Bar - Floating inside canvas */}
-            <div className="absolute top-6 left-6 right-6 z-20 flex justify-between items-center pointer-events-none">
-                <div className="flex gap-2 pointer-events-auto">
+            <div className="absolute top-2 left-2 right-2 lg:top-6 lg:left-6 lg:right-6 z-20 flex justify-between items-center pointer-events-none">
+                <div className="flex gap-1 lg:gap-2 pointer-events-auto">
                     <StatusPill icon={Box} label={config.model} active />
                     <StatusPill icon={Wand2} label={config.style} />
                     <StatusPill icon={Maximize2} label={config.ratio} />
                 </div>
-                <button className="h-10 w-10 rounded-full bg-zinc-900/80 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white pointer-events-auto backdrop-blur-md">
+                <button className="hidden lg:flex h-10 w-10 rounded-full bg-zinc-900/80 border border-zinc-800 items-center justify-center text-zinc-400 hover:text-white pointer-events-auto backdrop-blur-md">
                     <MoreHorizontal className="h-5 w-5" />
                 </button>
             </div>
@@ -66,7 +66,7 @@ export function MainCanvas({ config, generationState = DEFAULT_GENERATION_STATE,
             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_100%)] opacity-50" />
 
             {/* Main Content Area */}
-            <div className="flex-1 flex items-center justify-center p-12">
+            <div className="flex-1 flex items-center justify-center p-2 lg:p-12 pt-10 lg:pt-12">
                 {renderContent()}
             </div>
         </div>
@@ -76,17 +76,17 @@ export function MainCanvas({ config, generationState = DEFAULT_GENERATION_STATE,
 // Idle State - Empty canvas
 function IdleState() {
     return (
-        <div className="relative flex flex-col items-center justify-center w-[340px] h-[480px] rounded-[2rem] border border-dashed border-zinc-800 bg-zinc-950/30 group">
-            {/* "Cards" effect behind */}
-            <div className="absolute top-2 w-[90%] h-full rounded-[2rem] border border-zinc-800/50 bg-zinc-900/10 -z-10 -rotate-3 transition-transform group-hover:rotate-[-6deg]" />
-            <div className="absolute top-1 w-[95%] h-full rounded-[2rem] border border-zinc-800/80 bg-zinc-900/20 -z-10 -rotate-1 transition-transform group-hover:rotate-[-2deg]" />
+        <div className="relative flex flex-col items-center justify-center w-full h-full lg:w-[340px] lg:h-[480px] rounded-[2rem] lg:border lg:border-dashed lg:border-zinc-800 lg:bg-zinc-950/30 group">
+            {/* "Cards" effect behind - Desktop Only */}
+            <div className="hidden lg:block absolute top-2 w-[90%] h-full rounded-[2rem] border border-zinc-800/50 bg-zinc-900/10 -z-10 -rotate-3 transition-transform group-hover:rotate-[-6deg]" />
+            <div className="hidden lg:block absolute top-1 w-[95%] h-full rounded-[2rem] border border-zinc-800/80 bg-zinc-900/20 -z-10 -rotate-1 transition-transform group-hover:rotate-[-2deg]" />
 
-            <div className="h-16 w-16 mb-6 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 group-hover:text-white group-hover:border-zinc-700 transition-colors shadow-2xl">
-                <Sparkles className="h-6 w-6" />
+            <div className="h-10 w-10 lg:h-16 lg:w-16 mb-2 lg:mb-6 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 group-hover:text-white group-hover:border-zinc-700 transition-colors shadow-2xl">
+                <Sparkles className="h-4 w-4 lg:h-6 lg:w-6" />
             </div>
-            <h3 className="text-xl font-sora font-medium text-white mb-2">Start Creating</h3>
-            <p className="text-sm text-zinc-500 text-center max-w-[200px]">
-                Enter a prompt to generate high-fidelity art
+            <h3 className="text-sm lg:text-xl font-sora font-medium text-white mb-1 lg:mb-2">Start Creating</h3>
+            <p className="text-[10px] lg:text-sm text-zinc-500 text-center max-w-[160px] lg:max-w-[200px]">
+                Enter a prompt to generate art
             </p>
         </div>
     );
@@ -281,11 +281,11 @@ function StatusPill({ icon: Icon, label, active }: { icon: any; label: string; a
     if (!label) return null;
     return (
         <div className={`
-             flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-medium backdrop-blur-md transition-colors
+             flex items-center gap-1.5 lg:gap-2 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full border text-[10px] lg:text-xs font-medium backdrop-blur-md transition-colors
              ${active ? 'bg-zinc-800/80 border-blue-500/30 text-blue-200' : 'bg-zinc-900/60 border-zinc-800 text-zinc-400'}
         `}>
             <Icon className="h-3 w-3" />
-            <span>{label}</span>
+            <span className="hidden lg:inline">{label}</span>
         </div>
     )
 }

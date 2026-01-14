@@ -18,14 +18,14 @@ export default function Page() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col bg-background p-4 md:p-6 lg:p-8 font-outfit select-none">
+    <main className="flex min-h-screen flex-col bg-background p-4 lg:p-8 font-outfit select-none pb-24 lg:pb-8">
       {/* Shared Navbar */}
-      <div className="mb-6">
+      <div className="mb-6 lg:mb-6">
         <Navbar currentView={View.HOME} setCurrentView={handleViewChange} />
       </div>
 
       {/* Main Grid Content */}
-      <div className="grid flex-1 grid-cols-12 grid-rows-12 gap-6 h-full min-h-0">
+      <div className="grid flex-1 grid-cols-2 lg:grid-cols-12 lg:grid-rows-12 gap-4 lg:gap-6 h-auto lg:h-full lg:min-h-0">
         <FeaturedCard />
         <SideCard />
         <LetsGoCard />
@@ -35,7 +35,7 @@ export default function Page() {
 
       <div className="py-4 text-center">
         <p className="text-zinc-600 text-sm font-sora">
-          A Hasin Raiyan Creation (<a href="https://hasin.vercel.app" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-400 transition-colors">Hasin raiyan</a>)
+          A <a href="https://hasin.vercel.app" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-400 transition-colors">Hasin raiyan</a> Creation
         </p>
       </div>
     </main>

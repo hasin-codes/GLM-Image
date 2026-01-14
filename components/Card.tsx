@@ -22,9 +22,9 @@ export function Card({
         <div
             onClick={onClick}
             className={cn(
-                "relative overflow-hidden rounded-[2.5rem] border border-white/5 bg-zinc-950/50 backdrop-blur-sm transition-all duration-500 group",
+                "relative overflow-hidden rounded-2xl md:rounded-[2.5rem] border border-white/5 bg-zinc-950/50 backdrop-blur-sm transition-all duration-500 group",
                 // Premium border glow effect on hover (subtle)
-                "after:absolute after:inset-0 after:rounded-[2.5rem] after:border after:border-white/5 after:transition-colors after:duration-500 hover:after:border-white/10",
+                "after:absolute after:inset-0 after:rounded-2xl md:after:rounded-[2.5rem] after:border after:border-white/5 after:transition-colors after:duration-500 hover:after:border-white/10",
                 // Hover effects
                 hoverEffect === "scale" && "hover:scale-[1.02]",
                 hoverEffect === "glow" && "hover:shadow-[0_0_30px_-5px_rgba(255,255,255,0.1)]",

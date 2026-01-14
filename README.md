@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
+  <img src="public/Logo.svg" alt="GLM-Image Logo" width="120" />
+</div>
 
-## Getting Started
+# GLM-Image
 
-First, run the development server:
+GLM-Image is a dedicated web interface for the latest image generation model by Z.ai.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+While the GLM-Image model is accessible via Hugging Face, this project provides a robust, production-grade environment for users to interact with the model. It extends the core generation capabilities with multi-layer rendering support, a refined user interface, and advanced layout controls that are not available in standard demo environments.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Overview
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This application bridges the gap between raw model inference and a usable creative workflow. It is built to handle complex generation tasks including layer separation and high-fidelity inspections.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Current Status**: Frontend implementation is complete. Backend integration with the GLM-4 model API is currently in development.
 
-## Learn More
+## Features
 
-To learn more about Next.js, take a look at the following resources:
+- **Multi-Layer Generation**: Support for generating and compositing multiple image layers.
+- **Studio Environment**: A focused workspace (`/create`) with granular control over generation parameters.
+- **Advanced Inspection**: Custom magnifying glass tool for inspecting generated details at 1.25x magnification without loss of clarity.
+- **Responsive Layout**: Adaptive control panel and gallery layouts for mobile and desktop workstations.
+- **Authentication**: Integrated Clerk authentication for user session management.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Framework**: Next.js 16 (App Router)
+- **Library**: React 19 rc
+- **Styling**: Tailwind CSS 4
+- **State**: Zustand
+- **Graphics**: Three.js / OGL
+- **Auth**: Clerk
 
-## Deploy on Vercel
+## Local Development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Prerequisites
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Node.js 20+
+- npm 10+
+
+### Installation
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/your-org/glmimage.git
+   ```
+
+2. Install dependencies
+   ```bash
+   npm install
+   ```
+
+3. Configure environment
+   Create a `.env.local` file with required credentials:
+   ```env
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+   CLERK_SECRET_KEY=sk_test_...
+   ```
+
+4. Start development server
+   ```bash
+   npm run dev
+   ```
+
+## License
+
+Proprietary Software. All rights reserved.
