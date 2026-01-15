@@ -20,10 +20,21 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "GLM-Image",
-  description: "High-end AI Image Generation Dashboard",
+  title: "GLM-Image | AI-Powered Image Generation Studio by BetterGLM",
+  description: "Create stunning AI-generated images with GLM-Image. Featuring intelligent prompt optimization, multiple aspect ratios, and a beautiful discovery feed. Powered by BetterGLM technology.",
   icons: {
     icon: "/favico.ico",
+  },
+  openGraph: {
+    title: "GLM-Image | AI-Powered Image Generation Studio",
+    description: "Create stunning AI-generated images with intelligent prompt optimization. Transform your ideas into beautiful visuals instantly.",
+    type: "website",
+    siteName: "GLM-Image",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GLM-Image | AI-Powered Image Generation Studio",
+    description: "Create stunning AI-generated images with intelligent prompt optimization. Transform your ideas into beautiful visuals instantly.",
   },
 };
 
