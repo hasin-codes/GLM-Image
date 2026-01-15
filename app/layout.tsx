@@ -20,21 +20,21 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "GLM-Image | AI-Powered Image Generation Studio by BetterGLM",
-  description: "Create stunning AI-generated images with GLM-Image. Featuring intelligent prompt optimization, multiple aspect ratios, and a beautiful discovery feed. Powered by BetterGLM technology.",
+  title: "GLM-Image | Unofficial Wrapper for Zhipu AI's Open Source Image Model",
+  description: "An unofficial web interface for Z.ai's open-source GLM-Image model. Features intelligent prompt optimization via GLM-4.7, multiple aspect ratios, and a community discovery feed. Free to use.",
   icons: {
     icon: "/favico.ico",
   },
   openGraph: {
-    title: "GLM-Image | AI-Powered Image Generation Studio",
-    description: "Create stunning AI-generated images with intelligent prompt optimization. Transform your ideas into beautiful visuals instantly.",
+    title: "GLM-Image | Zhipu AI's Open Source Image Generation",
+    description: "Unofficial wrapper for Z.ai's GLM-Image model. Create stunning AI images with smart prompt optimization. Open source and free.",
     type: "website",
     siteName: "GLM-Image",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GLM-Image | AI-Powered Image Generation Studio",
-    description: "Create stunning AI-generated images with intelligent prompt optimization. Transform your ideas into beautiful visuals instantly.",
+    title: "GLM-Image | Zhipu AI's Open Source Image Generation",
+    description: "Unofficial wrapper for Z.ai's GLM-Image model. Create stunning AI images with smart prompt optimization. Open source and free.",
   },
 };
 
