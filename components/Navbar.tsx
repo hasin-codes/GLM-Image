@@ -33,6 +33,27 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setCurrentView }) =
                 </div>
 
                 <div className="flex items-center gap-3">
+                    {/* Dynamic Mobile Nav Button */}
+                    {currentView === View.DISCOVER && (
+                        <button
+                            onClick={() => setCurrentView(View.GENERATE)}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-600 text-white text-xs font-medium hover:bg-blue-500 transition-colors"
+                        >
+                            <Sparkles size={14} />
+                            <span>Generate</span>
+                        </button>
+                    )}
+
+                    {currentView === View.GENERATE && (
+                        <button
+                            onClick={() => setCurrentView(View.DISCOVER)}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-800 text-zinc-300 text-xs font-medium border border-zinc-700 hover:bg-zinc-700 hover:text-white transition-colors"
+                        >
+                            <Compass size={14} />
+                            <span>Discover</span>
+                        </button>
+                    )}
+
                     <SignedOut>
                         <SignInButton mode="modal">
                             <button className="px-4 py-2 rounded-full text-xs font-medium bg-zinc-800 text-white border border-zinc-700">
@@ -52,43 +73,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setCurrentView }) =
                 </div>
             </div>
 
-            {/* Mobile Bottom Navigation - Edge to Edge */}
-            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50">
-                <div className="bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-zinc-800 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex items-center justify-around shadow-[0_-8px_32px_rgba(0,0,0,0.5)]">
-                    <button
-                        onClick={() => setCurrentView(View.HOME)}
-                        className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-300 ${currentView === View.HOME
-                            ? 'bg-zinc-800 text-blue-400'
-                            : 'text-zinc-500 hover:text-zinc-300'
-                            }`}
-                    >
-                        <Home size={20} strokeWidth={currentView === View.HOME ? 2.5 : 2} />
-                        <span className="text-[10px] font-medium">Home</span>
-                    </button>
 
-                    <button
-                        onClick={() => setCurrentView(View.DISCOVER)}
-                        className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-300 ${currentView === View.DISCOVER
-                            ? 'bg-zinc-800 text-blue-400'
-                            : 'text-zinc-500 hover:text-zinc-300'
-                            }`}
-                    >
-                        <Compass size={20} strokeWidth={currentView === View.DISCOVER ? 2.5 : 2} />
-                        <span className="text-[10px] font-medium">Discover</span>
-                    </button>
-
-                    <button
-                        onClick={() => setCurrentView(View.GENERATE)}
-                        className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-300 ${currentView === View.GENERATE
-                            ? 'bg-zinc-800 text-blue-400'
-                            : 'text-zinc-500 hover:text-zinc-300'
-                            }`}
-                    >
-                        <Sparkles size={20} strokeWidth={currentView === View.GENERATE ? 2.5 : 2} />
-                        <span className="text-[10px] font-medium">Generate</span>
-                    </button>
-                </div>
-            </div>
 
             {/* Desktop Navigation (Original) */}
             <nav className="hidden lg:flex items-center justify-between gap-4 py-6 px-2 lg:px-0 select-none">
