@@ -19,7 +19,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setCurrentView }) =
     return (
         <>
             {/* Mobile Header (Logo & Auth) */}
-            <div className="lg:hidden flex items-center justify-between py-2 px-2">
+            <div className="md:hidden flex items-center justify-between py-2 px-2">
                 <div
                     className="flex items-center gap-3 cursor-pointer"
                     onClick={() => setCurrentView(View.HOME)}
@@ -76,7 +76,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setCurrentView }) =
 
 
             {/* Desktop Navigation (Original) */}
-            <nav className="hidden lg:flex items-center justify-between gap-4 py-6 px-2 lg:px-0 select-none">
+            <nav className="hidden md:flex items-center justify-between gap-4 py-6 px-2 lg:px-0 select-none">
 
                 {/* Brand Identity - Left */}
                 <div className="flex items-center gap-3 lg:w-[200px]">

@@ -182,7 +182,7 @@ export default function CreatePage({ sessionId }: CreatePageProps) {
             </div>
 
             {/* Main Studio Grid - Responsive Layout */}
-            <div className="flex-1 grid grid-rows-[45%_55%] lg:grid-rows-1 lg:grid-cols-[80px_1fr_400px] gap-2 lg:gap-4 min-h-0 relative pb-16 lg:pb-0">
+            <div className="flex-1 grid grid-rows-[45%_55%] md:grid-rows-[1fr_400px] lg:grid-rows-1 lg:grid-cols-[80px_1fr_400px] gap-2 lg:gap-4 min-h-0 relative pb-16 lg:pb-0">
 
                 {/* Mobile History Toggle */}
                 <button

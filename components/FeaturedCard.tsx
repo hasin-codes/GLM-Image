@@ -45,7 +45,7 @@ export function FeaturedCard() {
             onBlur={handleBlur}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            className="col-span-2 lg:col-span-8 lg:row-span-8 aspect-[262/109] md:h-[400px] lg:h-auto lg:aspect-auto group relative rounded-2xl md:rounded-[2.5rem] overflow-hidden"
+            className="col-span-2 md:col-span-4 lg:col-span-8 lg:row-span-8 aspect-[262/109] md:h-auto md:aspect-[262/109] lg:h-auto lg:aspect-auto group relative rounded-2xl md:rounded-[2.5rem] overflow-hidden"
         >
             <Card shimmer={false} className="h-full w-full border-none !p-0 overflow-hidden relative">
 

@@ -25,7 +25,7 @@ export default function Page() {
       </div>
 
       {/* Main Grid Content */}
-      <div className="grid flex-1 grid-cols-2 lg:grid-cols-12 lg:grid-rows-12 gap-4 lg:gap-6 h-auto lg:h-full lg:min-h-0">
+      <div className="grid flex-1 grid-cols-2 md:grid-cols-4 lg:grid-cols-12 lg:grid-rows-12 gap-4 lg:gap-6 h-auto lg:h-full lg:min-h-0">
         <FeaturedCard />
         <SideCard />
         <LetsGoCard />

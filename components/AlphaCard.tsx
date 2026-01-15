@@ -11,9 +11,9 @@ export function AlphaCard() {
             href="https://discord.gg/H3HvMPdc7D"
             target="_blank"
             rel="noopener noreferrer"
-            className="col-span-1 lg:col-span-4 lg:row-span-4 block aspect-square lg:aspect-auto"
+            className="col-span-1 md:col-span-4 lg:col-span-4 lg:row-span-4 block aspect-square md:h-[250px] md:aspect-auto lg:aspect-auto"
         >
-            <Card shimmer={false} hoverEffect="glow" className="h-full p-3 md:p-4 lg:p-8 flex items-center justify-between hover:bg-zinc-900/80 transition-colors relative overflow-hidden">
+            <Card shimmer={false} hoverEffect="glow" className="h-full p-3 md:p-6 lg:p-8 flex items-center justify-between hover:bg-zinc-900/80 transition-colors relative overflow-hidden">
                 {/* FloatingLines Background */}
                 <div className="absolute inset-0 z-0 opacity-60">
                     <FloatingLines

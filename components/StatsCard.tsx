@@ -5,7 +5,7 @@ const LiquidChrome = dynamic(() => import('@/components/LiquidChrome'), { ssr: f
 
 export function StatsCard() {
     return (
-        <Card shimmer={false} className="col-span-1 lg:col-span-6 lg:row-span-4 aspect-square lg:aspect-auto p-3 md:p-4 lg:p-8 flex flex-col justify-between relative overflow-hidden">
+        <Card shimmer={false} className="col-span-1 md:col-span-4 lg:col-span-6 lg:row-span-4 aspect-square md:h-auto md:aspect-auto lg:aspect-auto p-3 md:p-6 lg:p-8 flex flex-col justify-between relative overflow-hidden">
             {/* LiquidChrome Background */}
             <div className="absolute inset-0 z-0 opacity-60">
                 <LiquidChrome

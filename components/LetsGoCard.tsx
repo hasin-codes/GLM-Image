@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export function LetsGoCard() {
     return (
-        <Card shimmer={false} hoverEffect="scale" className="col-span-1 lg:col-span-2 lg:row-span-4 aspect-square md:h-[200px] lg:h-auto lg:aspect-auto rounded-2xl md:rounded-[2.5rem] relative group cursor-pointer border-none overflow-hidden">
+        <Card shimmer={false} hoverEffect="scale" className="col-span-1 md:col-span-2 lg:col-span-2 lg:row-span-4 aspect-square md:h-[300px] md:aspect-auto lg:h-auto lg:aspect-auto rounded-2xl md:rounded-[2.5rem] relative group cursor-pointer border-none overflow-hidden">
 
             <Link href="/create" className="absolute inset-0 z-50" aria-label="Go to Studio" />
 

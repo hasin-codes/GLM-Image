@@ -3,7 +3,7 @@ import { Card } from "@/components/Card";
 
 export function SideCard() {
     return (
-        <Card shimmer={true} className="col-span-1 lg:col-span-4 lg:row-span-8 aspect-square md:h-[200px] lg:h-auto lg:aspect-auto group relative">
+        <Card shimmer={true} className="col-span-1 md:col-span-2 lg:col-span-4 lg:row-span-8 aspect-square md:h-[300px] md:aspect-auto lg:h-auto lg:aspect-auto group relative">
             <Image
                 src="/images/Top.png"
                 alt="Top Generation"
