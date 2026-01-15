@@ -22,9 +22,6 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "GLM-Image | Unofficial Wrapper for Zhipu AI's Open Source Image Model",
   description: "An unofficial web interface for Z.ai's open-source GLM-Image model. Features intelligent prompt optimization via GLM-4.7, multiple aspect ratios, and a community discovery feed. Free to use.",
-  icons: {
-    icon: "/favico.ico",
-  },
   openGraph: {
     title: "GLM-Image | Zhipu AI's Open Source Image Generation",
     description: "Unofficial wrapper for Z.ai's GLM-Image model. Create stunning AI images with smart prompt optimization. Open source and free.",
