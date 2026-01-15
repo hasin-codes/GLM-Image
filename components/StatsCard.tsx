@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/Card";
 import dynamic from 'next/dynamic';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const LiquidChrome = dynamic(() => import('@/components/LiquidChrome'), { ssr: false });
 
@@ -13,6 +13,40 @@ interface Stats {
     impressions: string;
 }
 
+// Animated counter hook
+function useAnimatedCounter(targetValue: number, duration: number = 1500) {
+    const [displayValue, setDisplayValue] = useState(targetValue);
+    const startValueRef = useRef(targetValue);
+    const startTimeRef = useRef<number | null>(null);
+
+    useEffect(() => {
+        startValueRef.current = displayValue;
+        startTimeRef.current = null;
+
+        const animate = (timestamp: number) => {
+            if (!startTimeRef.current) startTimeRef.current = timestamp;
+            const elapsed = timestamp - startTimeRef.current;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Ease out cubic for smooth deceleration
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            const currentValue = startValueRef.current + (targetValue - startValueRef.current) * easeOut;
+
+            setDisplayValue(currentValue);
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        };
+
+        if (targetValue !== displayValue) {
+            requestAnimationFrame(animate);
+        }
+    }, [targetValue, duration]);
+
+    return displayValue;
+}
+
 export function StatsCard() {
     const [stats, setStats] = useState<Stats>({
         genPerHour: '12.0',
@@ -20,6 +54,11 @@ export function StatsCard() {
         hourlyUsers: 68,
         impressions: '2.1k',
     });
+
+    // Animated values
+    const animatedGenPerHour = useAnimatedCounter(parseFloat(stats.genPerHour) || 12);
+    const animatedCostValue = useAnimatedCounter(stats.costValue || 800);
+    const animatedHourlyUsers = useAnimatedCounter(stats.hourlyUsers || 68);
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -65,11 +104,15 @@ export function StatsCard() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-8 relative z-20">
                 <div>
                     <div className="text-[9px] md:text-xs text-zinc-400 mb-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">hourly users</div>
-                    <div className="text-lg md:text-2xl font-bold text-white font-sora drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{stats.hourlyUsers}</div>
+                    <div className="text-lg md:text-2xl font-bold text-white font-sora drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tabular-nums">
+                        {Math.round(animatedHourlyUsers)}
+                    </div>
                 </div>
                 <div>
                     <div className="text-[9px] md:text-xs text-zinc-400 mb-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">gen/hrs</div>
-                    <div className="text-lg md:text-2xl font-bold text-white font-sora drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{stats.genPerHour}</div>
+                    <div className="text-lg md:text-2xl font-bold text-white font-sora drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tabular-nums">
+                        {animatedGenPerHour.toFixed(1)}
+                    </div>
                 </div>
                 <div>
                     <div className="text-[9px] md:text-xs text-zinc-400 mb-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">Impression</div>
@@ -77,7 +120,9 @@ export function StatsCard() {
                 </div>
                 <div>
                     <div className="text-[9px] md:text-xs text-zinc-400 mb-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">Image gen</div>
-                    <div className="text-lg md:text-2xl font-bold text-white font-sora drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">${stats.costValue}</div>
+                    <div className="text-lg md:text-2xl font-bold text-white font-sora drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tabular-nums">
+                        ${Math.round(animatedCostValue)}
+                    </div>
                 </div>
             </div>
         </Card>
