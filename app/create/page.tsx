@@ -118,6 +118,7 @@ export default function CreatePage({ sessionId }: CreatePageProps) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     prompt: betterPrompt,
+                    originalPrompt: originalPrompt,
                     ratio: config.ratio,
                 }),
             });
