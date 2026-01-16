@@ -10,7 +10,7 @@ import prismadb from '@/lib/prismadb';
  * Request body schema with Zod validation
  */
 const bodySchema = z.object({
-    prompt: z.string().min(1, 'Prompt is required').max(2000, 'Prompt too long'),
+    prompt: z.string().min(1, 'Prompt is required').max(3000, 'Prompt too long'),
     style: z.string().optional(),
 });
 
