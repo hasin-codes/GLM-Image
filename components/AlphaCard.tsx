@@ -11,7 +11,7 @@ export function AlphaCard() {
             href="https://discord.gg/H3HvMPdc7D"
             target="_blank"
             rel="noopener noreferrer"
-            className="col-span-1 md:col-span-4 lg:col-span-4 lg:row-span-4 block aspect-square md:h-[250px] md:aspect-auto lg:aspect-auto"
+            className="col-span-1 md:col-span-4 lg:col-span-4 lg:row-span-4 block aspect-square md:h-auto md:aspect-auto lg:aspect-auto"
         >
             <Card shimmer={false} hoverEffect="glow" className="h-full p-3 md:p-6 lg:p-8 flex items-center justify-between hover:bg-zinc-900/80 transition-colors relative overflow-hidden">
                 {/* FloatingLines Background */}
@@ -40,7 +40,7 @@ export function AlphaCard() {
                         <h3 className="text-lg md:text-2xl font-bold text-zinc-400 font-sora leading-tight">Engage</h3>
                     </div>
                 </div>
-                <div className="h-10 w-10 md:h-16 md:w-16 rounded-full border border-zinc-700 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all relative z-20 flex-shrink-0">
+                <div className="h-10 w-10 md:h-16 md:w-16 rounded-full border border-zinc-700 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all relative z-20 shrink-0">
                     <ArrowUpRight className="h-4 w-4 md:h-6 md:w-6" />
                 </div>
             </Card>
