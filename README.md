@@ -67,6 +67,50 @@ User Input → /api/optimize → GLM-4.7 → betterPrompt
 
 ---
 
+## New Features
+
+### Daily Generation Limits
+
+Implemented Redis-based daily limits with per-user customization:
+
+```
+Generation Request → Check Daily Limit (Redis INCR)
+                                         │
+                              ┌──────────┴──────────┐
+                              │                     │
+                         Limit OK             Limit Reached
+                              │                     │
+                              ▼                     ▼
+                        Allow Generation    Show LimitExceededPopup
+```
+
+**Features:**
+- **Atomic Redis Operations**: Race-condition proof counting using `INCR` + `EXPIRE`
+- **Per-User Custom Limits**: Database field `dailyGenLimit` (default: 10)
+- **24-Hour Rolling Window**: Limits reset automatically after 24 hours
+- **Beautiful UI Feedback**: Animated popup when limit exceeded
+
+**Implementation:**
+```typescript
+// lib/daily-limit.ts
+checkDailyLimit(userId, limit) → { success, count, remaining }
+
+// prisma/schema.prisma
+model User {
+  dailyGenLimit Int @default(10)  // Customizable per user
+}
+
+// API response when limit reached
+HTTP 429: "Daily generation limit reached. Want to increase your limit? DM the developer."
+```
+
+**Database Field:**
+- Admins can override limits per user via `dailyGenLimit` field
+- Default: 10 generations/day
+- Stored in PostgreSQL, checked in real-time via Redis
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -86,6 +130,7 @@ User Input → /api/optimize → GLM-4.7 → betterPrompt
 
 ```
 User ──┬── Generation (1:N)
+       │     dailyGenLimit: Int @default(10)
        └── ModerationLog (1:N)
 
 Generation: id, userId, imageUrl, originalPrompt, betterPrompt,
@@ -102,7 +147,8 @@ ErrorLog: id, userId, endpoint, message, stack
 
 - **Auth**: Clerk middleware on all routes (except webhooks)
 - **Validation**: Zod schemas on all API inputs
-- **Rate Limit**: 10 req/min mutations, 60 req/min reads
+- **Rate Limit**: 10 req/min mutations (Upstash Redis sliding window)
+- **Daily Limits**: 10 generations/day per user (Redis INCR, custom limits via DB)
 - **Logging**: Pino with auto-redaction of secrets/prompts
 - **Ownership**: Users can only modify their own generations
 - **Webhook**: Svix signature verification
