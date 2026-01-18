@@ -9,13 +9,14 @@ datasource db {
 
 
 model User {
-  id        String   @id @default(uuid()) // Clerk ID
-  email     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(uuid()) // Clerk ID
+  email         String   @unique
+  dailyGenLimit Int      @default(10) // Daily image generation limit (can be overridden per user)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  generations Generation[]
-  moderationLogs ModerationLog[]
+  generations     Generation[]
+  moderationLogs  ModerationLog[]
 }
 
 model Generation {

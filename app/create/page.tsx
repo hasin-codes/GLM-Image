@@ -5,6 +5,7 @@ import { SidebarLeft } from "@/components/studio/SidebarLeft";
 import { ControlPanel } from "@/components/studio/ControlPanel";
 import { MainCanvas } from "@/components/studio/MainCanvas";
 import { Navbar } from "@/components/Navbar";
+import LimitExceededPopup from "@/components/LimitExceededPopup";
 import { View, GenerationConfig, GenerationStage, GenerationState } from "@/types";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
@@ -20,6 +21,7 @@ export default function CreatePage({ sessionId }: CreatePageProps) {
     const { isSignedIn } = useAuth();
     const { addGeneration } = useHistory();
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+    const [isLimitPopupOpen, setIsLimitPopupOpen] = useState(false);
 
     // Generation config
     const [config, setConfig] = useState<GenerationConfig>({
@@ -125,6 +127,18 @@ export default function CreatePage({ sessionId }: CreatePageProps) {
 
             if (!generateResponse.ok) {
                 const errorData = await generateResponse.json();
+
+                // Handle daily limit exceeded (429) - show popup instead of error
+                if (generateResponse.status === 429) {
+                    setIsLimitPopupOpen(true);
+                    setGenerationState({
+                        stage: GenerationStage.IDLE,
+                        result: null,
+                        error: null,
+                    });
+                    return;
+                }
+
                 throw new Error(errorData.error || 'Failed to generate image');
             }
 
@@ -178,7 +192,7 @@ export default function CreatePage({ sessionId }: CreatePageProps) {
     return (
         <main className="flex flex-col h-screen w-screen overflow-hidden bg-[#050505] text-white font-outfit select-none p-2 lg:p-4 gap-2 lg:gap-4">
             {/* Top Navbar */}
-            <div className="flex-shrink-0 px-2 lg:px-0">
+            <div className="shrink-0 px-2 lg:px-0">
                 <Navbar currentView={View.GENERATE} setCurrentView={handleViewChange} />
             </div>
 
@@ -261,6 +275,12 @@ export default function CreatePage({ sessionId }: CreatePageProps) {
                 </aside>
 
             </div>
+
+            {/* Daily Limit Exceeded Popup */}
+            <LimitExceededPopup
+                isOpen={isLimitPopupOpen}
+                onClose={() => setIsLimitPopupOpen(false)}
+            />
         </main>
     );
 }

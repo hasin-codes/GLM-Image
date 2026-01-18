@@ -5,6 +5,7 @@ import { generateImage, downloadImageAsBuffer, RATIO_MAP } from '@/lib/generator
 import { uploadImage } from '@/lib/supabase';
 import logger, { logApiError, logApiRequest } from '@/lib/logger';
 import { mutationRateLimiter, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit';
+import { checkDailyLimit } from '@/lib/daily-limit';
 import prismadb from '@/lib/prismadb';
 
 /**
@@ -32,6 +33,39 @@ export async function POST(request: NextRequest) {
         }
 
         logApiRequest('/api/generate', 'POST', userId);
+
+        // Fetch user's custom daily generation limit
+        const user = await prismadb.user.findUnique({
+            where: { id: userId },
+            select: { dailyGenLimit: true },
+        });
+
+        if (!user) {
+            return NextResponse.json(
+                { error: 'User not found. Please try signing out and back in.' },
+                { status: 404 }
+            );
+        }
+
+        // Check daily generation limit
+        const dailyLimitCheck = await checkDailyLimit(userId, user.dailyGenLimit);
+        if (!dailyLimitCheck.success) {
+            logger.warn(
+                {
+                    userId,
+                    endpoint: '/api/generate',
+                    count: dailyLimitCheck.count,
+                    limit: user.dailyGenLimit,
+                },
+                'Daily generation limit exceeded'
+            );
+            return NextResponse.json(
+                {
+                    error: 'Daily generation limit reached. Want to increase your limit? DM the developer on Discord.',
+                },
+                { status: 429 }
+            );
+        }
 
         // Rate limiting
         const rateLimit = await checkRateLimit(mutationRateLimiter, userId);

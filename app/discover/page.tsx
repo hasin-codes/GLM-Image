@@ -134,7 +134,7 @@ export default function DiscoverPage() {
                             Explore a curated gallery of AI-generated artwork.
                         </p>
                         <SignInButton mode="modal">
-                            <button className="px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-medium text-lg flex items-center gap-2 transition-all shadow-lg shadow-blue-500/25">
+                            <button className="px-8 py-4 rounded-2xl bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-medium text-lg flex items-center gap-2 transition-all shadow-lg shadow-blue-500/25">
                                 <Sparkles className="h-5 w-5" />
                                 Sign In to Continue
                             </button>

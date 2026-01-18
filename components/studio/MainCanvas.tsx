@@ -73,7 +73,7 @@ export function MainCanvas({ config, generationState = DEFAULT_GENERATION_STATE,
             </div>
 
             {/* Canvas Background - Grid Pattern */}
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_100%)] opacity-50" />
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_at_center,black_40%,transparent_100%)] opacity-50" />
 
             {/* Main Content Area */}
             <div className="flex-1 flex items-center justify-center p-2 lg:p-12 pt-10 lg:pt-12">
@@ -86,16 +86,16 @@ export function MainCanvas({ config, generationState = DEFAULT_GENERATION_STATE,
 // Idle State - Empty canvas
 function IdleState() {
     return (
-        <div className="relative flex flex-col items-center justify-center w-full h-full lg:w-[340px] lg:h-[480px] rounded-[2rem] lg:border lg:border-dashed lg:border-zinc-800 lg:bg-zinc-950/30 group">
+        <div className="relative flex flex-col items-center justify-center w-full h-full lg:w-85 lg:h-120 rounded-[2rem] lg:border lg:border-dashed lg:border-zinc-800 lg:bg-zinc-950/30 group">
             {/* "Cards" effect behind - Desktop Only */}
-            <div className="hidden lg:block absolute top-2 w-[90%] h-full rounded-[2rem] border border-zinc-800/50 bg-zinc-900/10 -z-10 -rotate-3 transition-transform group-hover:rotate-[-6deg]" />
-            <div className="hidden lg:block absolute top-1 w-[95%] h-full rounded-[2rem] border border-zinc-800/80 bg-zinc-900/20 -z-10 -rotate-1 transition-transform group-hover:rotate-[-2deg]" />
+            <div className="hidden lg:block absolute top-2 w-[90%] h-full rounded-[2rem] border border-zinc-800/50 bg-zinc-900/10 -z-10 -rotate-3 transition-transform group-hover:-rotate-6" />
+            <div className="hidden lg:block absolute top-1 w-[95%] h-full rounded-[2rem] border border-zinc-800/80 bg-zinc-900/20 -z-10 -rotate-1 transition-transform group-hover:-rotate-2" />
 
             <div className="h-10 w-10 lg:h-16 lg:w-16 mb-2 lg:mb-6 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 group-hover:text-white group-hover:border-zinc-700 transition-colors shadow-2xl">
                 <Sparkles className="h-4 w-4 lg:h-6 lg:w-6" />
             </div>
             <h3 className="text-sm lg:text-xl font-sora font-medium text-white mb-1 lg:mb-2">Start Creating</h3>
-            <p className="text-[10px] lg:text-sm text-zinc-500 text-center max-w-[160px] lg:max-w-[200px]">
+            <p className="text-[10px] lg:text-sm text-zinc-500 text-center max-w-40 lg:max-w-50">
                 Enter a prompt to generate art
             </p>
         </div>
@@ -105,9 +105,9 @@ function IdleState() {
 // Stage 1: Optimizing with BetterGLM
 function OptimizingState() {
     return (
-        <div className="relative flex flex-col items-center justify-center w-[95%] max-w-[260px] lg:max-w-[400px] h-auto min-h-[200px] lg:h-[480px] lg:aspect-auto rounded-[2rem] border border-blue-500/30 bg-blue-950/10 overflow-hidden p-4 lg:p-0">
+        <div className="relative flex flex-col items-center justify-center w-[95%] max-w-65 lg:max-w-100 h-auto min-h-50 lg:h-120 lg:aspect-auto rounded-[2rem] border border-blue-500/30 bg-blue-950/10 overflow-hidden p-4 lg:p-0">
             {/* Animated glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-t from-blue-500/10 via-transparent to-transparent animate-pulse" />
+            <div className="absolute inset-0 bg-linear-to-t from-blue-500/10 via-transparent to-transparent animate-pulse" />
 
             {/* Orbiting particles */}
             <div className="absolute inset-0 flex items-center justify-center">
@@ -120,7 +120,7 @@ function OptimizingState() {
                     <Sparkles className="h-4 w-4 lg:h-8 lg:w-8 text-blue-400 animate-pulse" />
                 </div>
                 <h3 className="text-base lg:text-xl font-sora font-medium text-white mb-1 lg:mb-2">BetterGLM</h3>
-                <p className="text-[10px] lg:text-sm text-blue-300/70 text-center max-w-[200px] mb-3 lg:mb-6 leading-relaxed">
+                <p className="text-[10px] lg:text-sm text-blue-300/70 text-center max-w-50 mb-3 lg:mb-6 leading-relaxed">
                     Optimizing prompt...
                 </p>
 
@@ -141,21 +141,21 @@ function OptimizingState() {
 // Stage 2: Generating image
 function GeneratingState() {
     return (
-        <div className="relative flex flex-col items-center justify-center w-[95%] max-w-[260px] lg:max-w-[400px] h-auto min-h-[200px] lg:h-[480px] lg:aspect-auto rounded-[2rem] border border-cyan-500/30 bg-cyan-950/10 overflow-hidden p-4 lg:p-0">
+        <div className="relative flex flex-col items-center justify-center w-[95%] max-w-65 lg:max-w-100 h-auto min-h-50 lg:h-120 lg:aspect-auto rounded-[2rem] border border-cyan-500/30 bg-cyan-950/10 overflow-hidden p-4 lg:p-0">
             {/* Animated gradient sweep */}
             <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent animate-shimmer-slow" />
+                <div className="absolute inset-0 bg-linear-to-r from-transparent via-cyan-500/10 to-transparent animate-shimmer-slow" />
             </div>
 
             {/* Image placeholder with shimmer */}
-            <div className="relative w-[130px] h-[130px] lg:w-[280px] lg:h-[280px] rounded-2xl bg-zinc-900/50 border border-cyan-500/20 overflow-hidden mb-3 lg:mb-6">
-                <div className="absolute inset-0 bg-gradient-to-r from-zinc-800/50 via-zinc-700/50 to-zinc-800/50 animate-shimmer" />
+            <div className="relative w-32.5 h-32.5 lg:w-70 lg:h-70 rounded-2xl bg-zinc-900/50 border border-cyan-500/20 overflow-hidden mb-3 lg:mb-6">
+                <div className="absolute inset-0 bg-linear-to-r from-zinc-800/50 via-zinc-700/50 to-zinc-800/50 animate-shimmer" />
                 {/* Grid pattern inside */}
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:1rem_1rem]" />
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[1rem_1rem]" />
             </div>
 
             <h3 className="text-base lg:text-xl font-sora font-medium text-white mb-1 lg:mb-2">Rendering Image</h3>
-            <p className="text-[10px] lg:text-sm text-cyan-300/70 text-center max-w-[200px] mb-3 lg:mb-6 leading-relaxed">
+            <p className="text-[10px] lg:text-sm text-cyan-300/70 text-center max-w-50 mb-3 lg:mb-6 leading-relaxed">
                 Creating artwork...
             </p>
 
@@ -175,12 +175,12 @@ function GeneratingState() {
 // Error State
 function ErrorState({ error, onRetry }: { error: string | null; onRetry?: () => void }) {
     return (
-        <div className="relative flex flex-col items-center justify-center w-[90%] max-w-[400px] h-auto min-h-[400px] lg:h-[480px] aspect-square lg:aspect-auto rounded-[2rem] border border-red-500/30 bg-red-950/10 p-6 lg:p-0">
+        <div className="relative flex flex-col items-center justify-center w-[90%] max-w-100 h-auto min-h-100 lg:h-120 aspect-square lg:aspect-auto rounded-[2rem] border border-red-500/30 bg-red-950/10 p-6 lg:p-0">
             <div className="h-16 w-16 mb-6 rounded-full bg-red-500/20 border border-red-500/30 flex items-center justify-center">
                 <AlertCircle className="h-8 w-8 text-red-400" />
             </div>
             <h3 className="text-xl font-sora font-medium text-white mb-2">Generation Failed</h3>
-            <p className="text-sm text-red-300/70 text-center max-w-[280px] mb-6">
+            <p className="text-sm text-red-300/70 text-center max-w-70 mb-6">
                 {error || 'An unexpected error occurred. Please try again.'}
             </p>
             {onRetry && (
@@ -249,7 +249,7 @@ function CompleteState({
                 </div>
 
                 {/* Right Side: Prompts Buttons - Fixed Width */}
-                <div className="w-[80px] lg:w-[120px] flex flex-col gap-3 lg:gap-4 shrink-0 h-full justify-center">
+                <div className="w-20 lg:w-30 flex flex-col gap-3 lg:gap-4 shrink-0 h-full justify-center">
                     {/* Original Prompt Button */}
                     <button
                         onClick={() => setActivePrompt('original')}
@@ -274,7 +274,7 @@ function CompleteState({
 
             {/* Image Modal - Fixed Fullscreen Overlay */}
             {showImageModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 lg:p-8">
+                <div className="fixed inset-0 z-100 flex items-center justify-center p-4 lg:p-8">
                     <div
                         className="absolute inset-0 bg-black/95 backdrop-blur-md"
                         onClick={() => setShowImageModal(false)}
@@ -313,7 +313,7 @@ function CompleteState({
 
             {/* Prompt Modal - Fixed Fullscreen Overlay */}
             {activePrompt && (
-                <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4">
+                <div className="fixed inset-0 z-100 flex items-end sm:items-center justify-center sm:p-4">
                     <div
                         className="absolute inset-0 bg-black/80 backdrop-blur-sm"
                         onClick={() => setActivePrompt(null)}
@@ -344,7 +344,7 @@ function CompleteState({
                         </div>
 
                         {/* Scrollable Content */}
-                        <div className="p-6 overflow-y-auto custom-scrollbar flex-1 min-h-[150px]">
+                        <div className="p-6 overflow-y-auto custom-scrollbar flex-1 min-h-37.5">
                             <p className="text-base text-zinc-300 leading-relaxed whitespace-pre-wrap font-light select-text">
                                 {activePrompt === 'better' ? result.betterPrompt : result.originalPrompt}
                             </p>
