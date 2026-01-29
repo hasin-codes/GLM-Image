@@ -181,34 +181,6 @@ CLERK_WEBHOOK_SECRET=whsec_...
 
 ---
 
-## Local Development
-
-```bash
-# Install
-npm install
-
-# Generate Prisma client
-npx prisma generate
-
-# Run dev server
-npm run dev
-
-# Open Prisma Studio
-npx prisma studio
-```
-
----
-
-## Deployment
-
-Vercel auto-deploys on push. Ensure all env vars are set in Vercel dashboard.
-
-```bash
-# Manual deploy
-vercel --prod
-```
-
----
 
 ## License
 
